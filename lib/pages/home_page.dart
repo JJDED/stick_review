@@ -6,6 +6,7 @@ import '../models/stick_review.dart';
 import 'review_list_page.dart';
 import 'review_detail_page.dart';
 import 'location_page.dart';
+import '../utility/review_utility.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -93,7 +94,7 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.star),
-            label: "Single",
+            label: "Details",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),

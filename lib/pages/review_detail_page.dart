@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shake/shake.dart';
 import '../models/stick_review.dart';
 import '../widgets/star_display.dart';
+import '../utility/review_utility.dart';
 
 class ReviewDetailPage extends StatefulWidget {
   final List<StickReview> allReviews;
