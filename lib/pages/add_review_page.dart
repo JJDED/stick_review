@@ -18,15 +18,18 @@ class _AddReviewPageState extends State<AddReviewPage> {
   String review = "";
   int rating = 3;
   String? imagePath;
+  String? location; // NYT
 
   @override
   void initState() {
     super.initState();
     if (widget.existingReview != null) {
-      title = widget.existingReview!.title;
-      review = widget.existingReview!.review;
-      rating = widget.existingReview!.rating;
-      imagePath = widget.existingReview!.imagePath;
+      final r = widget.existingReview!;
+      title = r.title;
+      review = r.review;
+      rating = r.rating;
+      imagePath = r.imagePath;
+      location = r.location; // NYT
     }
   }
 
@@ -57,34 +60,30 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   initialValue: title,
                   decoration: const InputDecoration(labelText: "Titel på pind"),
                   onSaved: (value) => title = value ?? "",
-                  validator: (value) =>
-                      (value == null || value.isEmpty) ? "Indtast en titel" : null,
+                  validator: (value) => (value == null || value.isEmpty) ? "Indtast en titel" : null,
                 ),
                 TextFormField(
                   initialValue: review,
                   decoration: const InputDecoration(labelText: "Din anmeldelse"),
                   onSaved: (value) => review = value ?? "",
-                  validator: (value) =>
-                      (value == null || value.isEmpty) ? "Indtast en anmeldelse" : null,
+                  validator: (value) => (value == null || value.isEmpty) ? "Indtast en anmeldelse" : null,
                 ),
                 DropdownButtonFormField<int>(
-                  initialValue: rating,
+                  value: rating,
                   decoration: const InputDecoration(labelText: "Rating"),
-                  items: List.generate(5, (i) {
-                    return DropdownMenuItem(
-                      value: i + 1,
-                      child: Text("${i + 1} stjerner"),
-                    );
-                  }),
-                  onChanged: (value) {
-                    setState(() {
-                      rating = value ?? 3;
-                    });
-                  },
+                  items: List.generate(5, (i) => DropdownMenuItem(value: i + 1, child: Text("${i + 1} stjerner"))),
+                  onChanged: (value) => setState(() => rating = value ?? 3),
+                ),
+                TextFormField(
+                  initialValue: location,
+                  decoration: const InputDecoration(
+                    labelText: "Lokation (f.eks. 'Skoven, Aarhus')",
+                    prefixIcon: Icon(Icons.location_on),
+                  ),
+                  onSaved: (value) => location = value?.trim().isEmpty == true ? null : value?.trim(),
                 ),
                 const SizedBox(height: 20),
-                if (imagePath != null)
-                  Image.file(File(imagePath!), height: 150),
+                if (imagePath != null) Image.file(File(imagePath!), height: 150),
                 ElevatedButton.icon(
                   onPressed: _pickImage,
                   icon: const Icon(Icons.image),
@@ -100,12 +99,13 @@ class _AddReviewPageState extends State<AddReviewPage> {
                         review: review,
                         rating: rating,
                         imagePath: imagePath,
+                        location: location, // NYT
                       );
                       Navigator.pop(context, reviewObj);
                     }
                   },
                   child: Text(isEditing ? "Opdater" : "Gem"),
-                )
+                ),
               ],
             ),
           ),

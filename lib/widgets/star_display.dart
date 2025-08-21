@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 class StarDisplay extends StatelessWidget {
   final int rating;
-  final double size;
+  final Color color; // Tilføj denne linje
 
-  const StarDisplay({super.key, required this.rating, this.size = 20});
+  const StarDisplay({super.key, required this.rating, this.color = Colors.amber}); // default til amber
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: List.generate(5, (index) {
-        if (index < rating) {
-          return Icon(Icons.star, color: Colors.amber, size: size);
-        } else {
-          return Icon(Icons.star_border, color: Colors.grey, size: size);
-        }
+        return Icon(
+          index < rating ? Icons.star : Icons.star_border,
+          color: color,
+          size: 20,
+        );
       }),
     );
   }

@@ -28,9 +28,9 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
     super.initState();
     currentReview = widget.initialReview;
 
-    // Start shake detection
+    // Start shake detection (opdateret til Shake 3.0.0)
     detector = ShakeDetector.autoStart(
-      onPhoneShake: () {
+      onPhoneShake: (ShakeEvent event) {
         _showRandomReview();
       },
     );
@@ -60,7 +60,7 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Review Detail"),
+        title: const Text("Stick Details"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
