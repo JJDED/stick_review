@@ -1,13 +1,14 @@
+import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/stick_review.dart';
 import 'review_list_page.dart';
 import 'review_detail_page.dart';
 import 'location_page.dart';
-import '../models/stick_review.dart';
 
 class HomePage extends StatefulWidget {
-  final List<StickReview> reviews;
-
-  const HomePage({super.key, required this.reviews});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -15,6 +16,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  List<StickReview> _reviews = [];
+  StickReview? _randomReview;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReviews();
+  }
+
+  Future<void> _loadReviews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString('reviews');
+    List<StickReview> loadedReviews = [];
+
+    if (jsonString != null) {
+      final List decoded = jsonDecode(jsonString);
+      loadedReviews = decoded.map((e) => StickReview.fromJson(e)).toList();
+    }
+
+    StickReview? randomReview;
+    if (loadedReviews.isNotEmpty) {
+      final randomIndex = Random().nextInt(loadedReviews.length);
+      randomReview = loadedReviews[randomIndex];
+    }
+
+    setState(() {
+      _reviews = loadedReviews;
+      _randomReview = randomReview;
+      _isLoading = false;
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,18 +57,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    // Hvis ingen reviews er tilgængelige
+    if (_reviews.isEmpty) {
+      return const Scaffold(
+        body: Center(child: Text("Ingen anmeldelser endnu")),
+      );
+    }
+
     final pages = [
-      // Single view (viser første review eller tekst hvis ingen)
-      widget.reviews.isNotEmpty
-          ? ReviewDetailPage(
-              allReviews: widget.reviews,
-              initialReview: widget.reviews.first,
-            )
-          : const Center(child: Text("Ingen anmeldelser endnu")),
+      // Single view med random review
+      ReviewDetailPage(
+        allReviews: _reviews,
+        initialReview: _randomReview ?? _reviews.first,
+      ),
       // Listevisning
-      ReviewListPage(reviews: widget.reviews),
+      ReviewListPage(reviews: _reviews),
       // Location
-      LocationPage(reviews: widget.reviews),
+      LocationPage(reviews: _reviews),
     ];
 
     return Scaffold(

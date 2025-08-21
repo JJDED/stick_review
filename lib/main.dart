@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'models/stick_review.dart';
 import 'pages/home_page.dart';
 
 void main() {
@@ -14,21 +13,20 @@ class StickReviewApp extends StatefulWidget {
 }
 
 class _StickReviewAppState extends State<StickReviewApp> {
-  // Midlertidig liste med testdata
-  final List<StickReview> _reviews = [
-  ];
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Sticktok',
       theme: ThemeData(
-        useMaterial3: true, // Material 3
-        primarySwatch: Colors.teal, // Primærfarve
-        scaffoldBackgroundColor: Colors.grey[100], // Lys baggrund
+        primaryColor: Colors.teal,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: Colors.orangeAccent,
+        ),
+        scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.teal,
           foregroundColor: Colors.white,
+          elevation: 2,
         ),
         cardTheme: CardThemeData(
           color: Colors.white,
@@ -36,13 +34,10 @@ class _StickReviewAppState extends State<StickReviewApp> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-        ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.deepPurple,
-          foregroundColor: Colors.white,
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         ),
       ),
-      home: HomePage(reviews: _reviews),
+      home: const HomePage(), // <--- her er parameteren fjernet
     );
   }
 }

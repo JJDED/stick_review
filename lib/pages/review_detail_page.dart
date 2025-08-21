@@ -60,7 +60,7 @@ class _ReviewDetailPageState extends State<ReviewDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Stick Details"),
+        title: const Text("Sticktok Details"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

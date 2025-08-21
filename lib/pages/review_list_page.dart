@@ -64,6 +64,23 @@ class _ReviewListPageState extends State<ReviewListPage> {
     _saveReviews();
   }
 
+Color _ratingColor(int rating) {
+  switch (rating) {
+    case 1:
+      return Colors.red; // eksisterende rød
+    case 2:
+      return Colors.orange; // orange
+    case 3:
+      return Colors.amber; // eksisterende gul
+    case 4:
+      return Colors.lightGreen; // lysegrøn
+    case 5:
+      return Colors.green; // eksisterende grøn
+    default:
+      return Colors.grey;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     final reviews = widget.reviews;
@@ -77,90 +94,69 @@ class _ReviewListPageState extends State<ReviewListPage> {
               itemBuilder: (context, index) {
                 final r = reviews[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 4,
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.all(12),
-                    title: Text(
-                      r.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    subtitle: Column(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(r.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
                         Text(r.review),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            StarDisplay(rating: r.rating, color: Colors.amber),
+                            StarDisplay(rating: r.rating, color: _ratingColor(r.rating)),
                             const SizedBox(width: 8),
                             Text('${r.rating}/5', style: const TextStyle(color: Colors.black54)),
                           ],
                         ),
-                        if (r.location != null && (r.location?.isNotEmpty ?? false)) ...[
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const Icon(Icons.location_on, size: 16, color: Colors.redAccent),
-                              const SizedBox(width: 4),
-                              Flexible(child: Text(r.location!, style: const TextStyle(color: Colors.black54))),
-                            ],
+                        if (r.location != null && r.location!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 16, color: Colors.black54),
+                                const SizedBox(width: 4),
+                                Flexible(child: Text(r.location!, style: const TextStyle(color: Colors.black54))),
+                              ],
+                            ),
                           ),
-                        ],
-                        if (r.imagePath != null && r.imagePath!.isNotEmpty) ...[
+                        if (r.imagePath != null) ...[
                           const SizedBox(height: 8),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(r.imagePath!),
-                              height: 100,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
+                            child: Image.file(File(r.imagePath!), height: 100, fit: BoxFit.cover),
                           ),
                         ],
-                      ],
-                    ),
-                    isThreeLine: true,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ReviewDetailPage(
-                            allReviews: reviews,
-                            initialReview: r,
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: PopupMenuButton<String>(
+                            onSelected: (value) async {
+                              if (value == 'delete') {
+                                _deleteReview(index);
+                              } else if (value == 'edit') {
+                                final updated = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddReviewPage(existingReview: r),
+                                  ),
+                                );
+                                if (updated != null && updated is StickReview) {
+                                  _editReview(index, updated);
+                                }
+                              }
+                            },
+                            itemBuilder: (context) => const [
+                              PopupMenuItem(
+                                value: 'edit',
+                                child: Text('Rediger'),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Text('Slet'),
+                              ),
+                            ],
                           ),
-                        ),
-                      );
-                    },
-                    trailing: PopupMenuButton<String>(
-                      onSelected: (value) async {
-                        if (value == 'delete') {
-                          _deleteReview(index);
-                        } else if (value == 'edit') {
-                          final updated = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AddReviewPage(existingReview: r),
-                            ),
-                          );
-                          if (updated != null && updated is StickReview) {
-                            _editReview(index, updated);
-                          }
-                        }
-                      },
-                      itemBuilder: (context) => const [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text('Rediger'),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text('Slet'),
                         ),
                       ],
                     ),
@@ -169,6 +165,7 @@ class _ReviewListPageState extends State<ReviewListPage> {
               },
             ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orangeAccent,
         onPressed: () async {
           final newReview = await Navigator.push(
             context,
