@@ -6,7 +6,6 @@ import '../models/stick_review.dart';
 import 'review_list_page.dart';
 import 'review_detail_page.dart';
 import 'location_page.dart';
-import '../utility/review_utility.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -64,23 +63,24 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    // Hvis ingen reviews er tilgængelige
-    if (_reviews.isEmpty) {
-      return const Scaffold(
-        body: Center(child: Text("Ingen anmeldelser endnu")),
-      );
-    }
-
     final pages = [
-      // Single view med random review
-      ReviewDetailPage(
-        allReviews: _reviews,
-        initialReview: _randomReview ?? _reviews.first,
-      ),
+      // Details side
+      _reviews.isEmpty
+          ? const Center(
+              child: Text(
+                "Velkommen!\nTryk på '+' for at tilføje din første anmeldelse",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+            )
+          : ReviewDetailPage(
+              allReviews: _reviews,
+              initialReview: _randomReview ?? _reviews.first,
+            ),
       // Listevisning
       ReviewListPage(reviews: _reviews),
-      // Location
-      LocationPage(reviews: _reviews),
+      // Location side – uden reviews, hvis du har lavet den statisk
+      const LocationPage(),
     ];
 
     return Scaffold(

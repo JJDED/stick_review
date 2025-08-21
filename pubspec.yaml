@@ -40,6 +40,7 @@ dependencies:
   latlong2: ^0.9.0
   geocoding: ^2.2.0
   google_maps_flutter: ^2.2.5
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -61,6 +62,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/middle-earth-map.webp
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
