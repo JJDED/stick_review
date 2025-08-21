@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/stick_review.dart';
 import 'add_review_page.dart';
+import 'review_detail_page.dart';
 import '../widgets/star_display.dart';
 
 class ReviewListPage extends StatefulWidget {
@@ -46,6 +47,20 @@ class _ReviewListPageState extends State<ReviewListPage> {
     _saveReviews();
   }
 
+  void _deleteReview(int index) {
+    setState(() {
+      reviews.removeAt(index);
+    });
+    _saveReviews();
+  }
+
+  void _editReview(int index, StickReview updated) {
+    setState(() {
+      reviews[index] = updated;
+    });
+    _saveReviews();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +85,45 @@ class _ReviewListPageState extends State<ReviewListPage> {
                     ],
                   ),
                   isThreeLine: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReviewDetailPage(
+                          allReviews: reviews,
+                          initialReview: r,
+                        ),
+                      ),
+                    );
+                  },
+                  trailing: PopupMenuButton<String>(
+                    onSelected: (value) async {
+                      if (value == 'delete') {
+                        _deleteReview(index);
+                      }
+                      if (value == 'edit') {
+                        final updated = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddReviewPage(),
+                          ),
+                        );
+                        if (updated != null && updated is StickReview) {
+                          _editReview(index, updated);
+                        }
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Text('Rediger'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Slet'),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

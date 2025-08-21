@@ -4,7 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import '../models/stick_review.dart';
 
 class AddReviewPage extends StatefulWidget {
-  const AddReviewPage({super.key});
+  final StickReview? existingReview;
+
+  const AddReviewPage({super.key, this.existingReview});
 
   @override
   State<AddReviewPage> createState() => _AddReviewPageState();
@@ -16,6 +18,17 @@ class _AddReviewPageState extends State<AddReviewPage> {
   String review = "";
   int rating = 3;
   String? imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingReview != null) {
+      title = widget.existingReview!.title;
+      review = widget.existingReview!.review;
+      rating = widget.existingReview!.rating;
+      imagePath = widget.existingReview!.imagePath;
+    }
+  }
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -29,8 +42,10 @@ class _AddReviewPageState extends State<AddReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.existingReview != null;
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Tilføj anmeldelse")),
+      appBar: AppBar(title: Text(isEditing ? "Rediger anmeldelse" : "Tilføj anmeldelse")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -39,19 +54,21 @@ class _AddReviewPageState extends State<AddReviewPage> {
             child: Column(
               children: [
                 TextFormField(
+                  initialValue: title,
                   decoration: const InputDecoration(labelText: "Titel på pind"),
                   onSaved: (value) => title = value ?? "",
                   validator: (value) =>
                       (value == null || value.isEmpty) ? "Indtast en titel" : null,
                 ),
                 TextFormField(
+                  initialValue: review,
                   decoration: const InputDecoration(labelText: "Din anmeldelse"),
                   onSaved: (value) => review = value ?? "",
                   validator: (value) =>
                       (value == null || value.isEmpty) ? "Indtast en anmeldelse" : null,
                 ),
                 DropdownButtonFormField<int>(
-                  value: rating,
+                  initialValue: rating,
                   decoration: const InputDecoration(labelText: "Rating"),
                   items: List.generate(5, (i) {
                     return DropdownMenuItem(
@@ -78,16 +95,16 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      final newReview = StickReview(
+                      final reviewObj = StickReview(
                         title: title,
                         review: review,
                         rating: rating,
                         imagePath: imagePath,
                       );
-                      Navigator.pop(context, newReview);
+                      Navigator.pop(context, reviewObj);
                     }
                   },
-                  child: const Text("Gem"),
+                  child: Text(isEditing ? "Opdater" : "Gem"),
                 )
               ],
             ),
