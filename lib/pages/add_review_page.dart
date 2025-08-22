@@ -48,7 +48,9 @@ class _AddReviewPageState extends State<AddReviewPage> {
     final isEditing = widget.existingReview != null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(isEditing ? "Rediger anmeldelse" : "Tilføj anmeldelse")),
+      appBar: AppBar(
+        title: Text(isEditing ? "Rediger anmeldelse" : "Tilføj anmeldelse"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -60,18 +62,30 @@ class _AddReviewPageState extends State<AddReviewPage> {
                   initialValue: title,
                   decoration: const InputDecoration(labelText: "Titel på pind"),
                   onSaved: (value) => title = value ?? "",
-                  validator: (value) => (value == null || value.isEmpty) ? "Indtast en titel" : null,
+                  validator: (value) => (value == null || value.isEmpty)
+                      ? "Indtast en titel"
+                      : null,
                 ),
                 TextFormField(
                   initialValue: review,
-                  decoration: const InputDecoration(labelText: "Din anmeldelse"),
+                  decoration: const InputDecoration(
+                    labelText: "Din anmeldelse",
+                  ),
                   onSaved: (value) => review = value ?? "",
-                  validator: (value) => (value == null || value.isEmpty) ? "Indtast en anmeldelse" : null,
+                  validator: (value) => (value == null || value.isEmpty)
+                      ? "Indtast en anmeldelse"
+                      : null,
                 ),
                 DropdownButtonFormField<int>(
-                  value: rating,
+                  initialValue: rating,
                   decoration: const InputDecoration(labelText: "Rating"),
-                  items: List.generate(5, (i) => DropdownMenuItem(value: i + 1, child: Text("${i + 1} stjerner"))),
+                  items: List.generate(
+                    5,
+                    (i) => DropdownMenuItem(
+                      value: i + 1,
+                      child: Text("${i + 1} stjerner"),
+                    ),
+                  ),
                   onChanged: (value) => setState(() => rating = value ?? 3),
                 ),
                 TextFormField(
@@ -80,10 +94,13 @@ class _AddReviewPageState extends State<AddReviewPage> {
                     labelText: "Lokation (f.eks. 'Skoven, Aarhus')",
                     prefixIcon: Icon(Icons.location_on),
                   ),
-                  onSaved: (value) => location = value?.trim().isEmpty == true ? null : value?.trim(),
+                  onSaved: (value) => location = value?.trim().isEmpty == true
+                      ? null
+                      : value?.trim(),
                 ),
                 const SizedBox(height: 20),
-                if (imagePath != null) Image.file(File(imagePath!), height: 150),
+                if (imagePath != null)
+                  Image.file(File(imagePath!), height: 150),
                 ElevatedButton.icon(
                   onPressed: _pickImage,
                   icon: const Icon(Icons.image),

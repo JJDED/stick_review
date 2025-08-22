@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/stick_review.dart';
 import 'add_review_page.dart';
-import 'review_detail_page.dart';
 import '../widgets/star_display.dart';
 
 class ReviewListPage extends StatefulWidget {

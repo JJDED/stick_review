@@ -24,7 +24,7 @@ class _StickReviewAppState extends State<StickReviewApp> {
         ),
         scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
+          backgroundColor: Colors.lightBlue,
           foregroundColor: Colors.white,
           elevation: 2,
         ),

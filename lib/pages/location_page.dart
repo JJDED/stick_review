@@ -13,7 +13,7 @@ class LocationPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               children: const [
-                Icon(Icons.map, size: 28, color: Colors.teal),
+                Icon(Icons.map, size: 28, color: Color.fromARGB(255, 0, 195, 255)),
                 SizedBox(width: 8),
                 Text(
                   "Lokationer",
